@@ -1,11 +1,5 @@
 pipeline {
     agent any
-
-    environment {
-        JOB_NAME = 'Jenkins-job'
-        BUILD_NUMBER = '001'
-    }
-
     stages {
         stage('Build') {
             steps {
@@ -53,14 +47,14 @@ pipeline {
 
     post {
       success {
-        mail to: 'fernandosenan@gmail.com',
-             subject: "Pipeline Success: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-             body: "The pipeline has completed successfully."
+            mail to: 'fernandosenan@gmail.com',
+            subject: "Pipeline Success",
+            body: "The pipeline has completed successfully."
       }
       failure {
-        mail to: 'your-email@example.com',
-             subject: "Pipeline Failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-             body: "The pipeline has failed. Please check the logs."
+            mail to: 'your-email@example.com',
+            subject: "Pipeline Failed",
+            body: "The pipeline has failed. Please check the logs."
       }
     }  
 
