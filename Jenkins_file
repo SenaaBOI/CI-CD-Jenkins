@@ -50,6 +50,7 @@ pipeline {
             mail to: 'fernandosenan@gmail.com',
             subject: "Pipeline Success",
             body: "The pipeline has completed successfully."
+            attachLog: true
       }
       failure {
             mail to: 'fernandosenan@gmail.com',
