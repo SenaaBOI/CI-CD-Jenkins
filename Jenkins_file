@@ -1,5 +1,11 @@
 pipeline {
     agent any
+
+    environment {
+        DIRECTORY_PATH = '/path/to/the/code'
+        TESTING_ENVIRONMENT = 'TestEnv'
+        PRODUCTION_ENVIRONMENT = 'SenanFernando'
+    }
     stages {
         stage('Build') {
             steps {
