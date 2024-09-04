@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DIRECTORY_PATH = '/path/to/the/code'
-        TESTING_ENVIRONMENT = 'TestEnv'
-        PRODUCTION_ENVIRONMENT = 'SenanFernando'
-    }
     stages {
         stage('Build') {
             steps {
@@ -15,8 +10,32 @@ pipeline {
         }
         stage('Unit and Integration Tests') {
             steps {
-                echo "Running unit and integration tests..."
-                // sh 'mvn test'
+                script {
+                    logFile = "unit_integration_tests.log"
+                    sh "echo Running unit and integration tests... > ${logFile}"
+                    // sh 'mvn test >> ${logFile} 2>&1'
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: logFile, allowEmptyArchive: true
+                    emailext(
+                        to: 'fernandosenan@gmail.com',
+                        subject: "Unit and Integration Tests Success: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                        body: """<p>The Unit and Integration Tests stage has completed successfully.</p>
+                                 <p>Please find the log attached.</p>""",
+                        attachmentsPattern: logFile
+                    )
+                }
+                failure {
+                    archiveArtifacts artifacts: logFile, allowEmptyArchive: true
+                    emailext(
+                        to: 'fernandosenan@gmail.com',
+                        subject: "Unit and Integration Tests Failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                        body: """<p>The Unit and Integration Tests stage has failed. Please check the attached log for details.</p>""",
+                        attachmentsPattern: logFile
+                    )
+                }
             }
         }
         stage('Code Analysis') {
@@ -27,8 +46,32 @@ pipeline {
         }
         stage('Security Scan') {
             steps {
-                echo "Running security scan..."
-                // sh 'dependency-check.sh'
+                script {
+                    logFile = "security_scan.log"
+                    sh "echo Running security scan... > ${logFile}"
+                    // sh 'dependency-check.sh >> ${logFile} 2>&1'
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: logFile, allowEmptyArchive: true
+                    emailext(
+                        to: 'fernandosenan@gmail.com',
+                        subject: "Security Scan Success: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                        body: """<p>The Security Scan stage has completed successfully.</p>
+                                 <p>Please find the log attached.</p>""",
+                        attachmentsPattern: logFile
+                    )
+                }
+                failure {
+                    archiveArtifacts artifacts: logFile, allowEmptyArchive: true
+                    emailext(
+                        to: 'fernandosenan@gmail.com',
+                        subject: "Security Scan Failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+                        body: """<p>The Security Scan stage has failed. Please check the attached log for details.</p>""",
+                        attachmentsPattern: logFile
+                    )
+                }
             }
         }
         stage('Deploy to Staging') {
@@ -52,20 +95,17 @@ pipeline {
     }
 
     post {
-      success {
-                mail to: 'fernandosenan@gmail.com',
-                subject: "Pipeline Success: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-                body: "The pipeline has completed successfully.\n\nPlease find the build log attached.",
-                attachLog: true
-            
-      }
-      failure {
-                mail to: 'fernandosenan@gmail.com',
-                subject: "Pipeline Failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-                body: "The pipeline has failed. Please check the attached build log for details.",
-                attachLog: true
-            
-      }
+        success {
+            mail to: 'fernandosenan@gmail.com',
+            subject: "Pipeline Success: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+            body: "The pipeline has completed successfully.\n\nPlease find the build log attached.",
+            attachLog: true
+        }
+        failure {
+            mail to: 'fernandosenan@gmail.com',
+            subject: "Pipeline Failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
+            body: "The pipeline has failed. Please check the attached build log for details.",
+            attachLog: true
+        }
     }  
-
 }
