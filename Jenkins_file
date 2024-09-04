@@ -98,13 +98,13 @@ pipeline {
         success {
             mail to: 'fernandosenan@gmail.com',
             subject: "Pipeline Success: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-            body: "The pipeline has completed successfully. Please find the build log attached."
+            body: "The pipeline has completed successfully."
         }
 
         failure {
             mail to: 'fernandosenan@gmail.com',
             subject: "Pipeline Failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}]",
-            body: "The pipeline has failed. Please check the attached build log for details."
+            body: "The pipeline has failed."
         }
     }
 }
