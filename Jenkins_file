@@ -80,7 +80,12 @@ pipeline {
                 // sh 'aws deploy create-deployment'
             }
         }
-       
+         stage('Integration Tests on Staging') {
+            steps {
+                echo "Running integration tests on staging..."
+                // sh 'newman run collection.json'
+            }
+        }
         stage('Deploy to Production') {
             steps {
                 echo "Deploying to production..."
